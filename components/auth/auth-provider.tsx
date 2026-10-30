@@ -14,7 +14,7 @@ interface AuthState {
 
 const AuthContext = createContext<AuthState | null>(null);
 
-const PROFILE_COLUMNS = 'id, account_type, full_name, governorate';
+const PROFILE_COLUMNS = 'id, account_type, full_name, governorate, status';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<{ session: Session | null; profile: Profile | null; loading: boolean }>({

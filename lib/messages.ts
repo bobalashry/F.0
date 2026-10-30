@@ -15,6 +15,23 @@ const ERROR_MESSAGES: Array<[string, string]> = [
   ['row-level security', 'ليس لديك صلاحية لتنفيذ هذا الإجراء'],
   ['not_allowed', 'ليس لديك صلاحية لتنفيذ هذا الإجراء'],
   ['deals_listing_id_fkey', 'لا يمكن حذف الإعلان لوجود اتفاقات مرتبطة به، يمكنك إغلاقه بدلاً من ذلك'],
+  ['account_not_active', 'حسابك موقوف حالياً ولا يمكنك تنفيذ هذا الإجراء'],
+  ['request_already_pending', 'لديك طلب تغيير نوع الحساب قيد المراجعة بالفعل'],
+  ['invalid_account_type', 'نوع الحساب المطلوب غير صالح'],
+  ['reason_invalid', 'يرجى كتابة سبب الطلب بين 10 و1000 حرف'],
+  ['reason_required', 'يرجى كتابة سبب الإجراء بوضوح (5 أحرف على الأقل)'],
+  ['protected_account', 'لا يمكن تنفيذ هذا الإجراء على هذا الحساب'],
+  ['member_not_found', 'العضو غير موجود'],
+  ['member_has_deals', 'لا يمكن حذف هذا الحساب لوجود اتفاقات مرتبطة به، يمكن إيقافه بدلاً من ذلك'],
+  ['confirmation_mismatch', 'البريد الإلكتروني للتأكيد لا يطابق بريد العضو'],
+  ['listing_not_found', 'الإعلان غير موجود'],
+  ['listing_has_deals', 'لا يمكن حذف الإعلان لوجود اتفاقات مرتبطة به، يمكن إيقافه بدلاً من ذلك'],
+  ['request_not_found', 'الطلب غير موجود'],
+  ['request_not_pending', 'تمت مراجعة هذا الطلب بالفعل'],
+  ['request_stale', 'تغيّر نوع الحساب منذ تقديم الطلب، يرجى مراجعته من جديد'],
+  ['permissions_required', 'اختر صلاحية واحدة على الأقل'],
+  ['admin_not_found', 'المشرف غير موجود'],
+  ['invalid_status', 'الحالة المطلوبة غير صالحة'],
 ];
 
 export const translateError = (error: { message?: string } | null | undefined) => {

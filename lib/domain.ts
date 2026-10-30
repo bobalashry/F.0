@@ -1,14 +1,17 @@
 export type AccountType = 'worker' | 'owner';
-export type ListingStatus = 'active' | 'paused' | 'closed';
+export type ListingStatus = 'active' | 'paused' | 'closed' | 'suspended';
 export type CommissionType = 'percentage' | 'fixed';
 export type ApplicationStatus = 'pending' | 'accepted' | 'rejected' | 'withdrawn';
 export type DealStatus = 'active' | 'completed';
+
+export type ProfileStatus = 'active' | 'suspended' | 'banned';
 
 export interface Profile {
   id: string;
   account_type: AccountType;
   full_name: string;
   governorate: string | null;
+  status: ProfileStatus;
 }
 
 export interface OwnerName {
@@ -137,6 +140,7 @@ export const listingStatusLabel: Record<ListingStatus, string> = {
   active: 'منشور',
   paused: 'متوقف مؤقتاً',
   closed: 'مغلق',
+  suspended: 'موقوف من الإدارة',
 };
 
 export const dealStatusLabel: Record<DealStatus, string> = {

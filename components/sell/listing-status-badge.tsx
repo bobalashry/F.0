@@ -4,6 +4,7 @@ const STYLES: Record<ListingStatus, string> = {
   active: 'bg-emerald-50 text-emerald-800 ring-emerald-200',
   paused: 'bg-amber-50 text-amber-800 ring-amber-200',
   closed: 'bg-slate-100 text-slate-700 ring-slate-200',
+  suspended: 'bg-rose-50 text-rose-800 ring-rose-200',
 };
 
 export function ListingStatusBadge({ status }: { status: ListingStatus }) {

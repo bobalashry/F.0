@@ -54,6 +54,22 @@ export function OwnerListingActions({ listing, onStatusChange }: OwnerListingAct
     router.push('/sell');
   };
 
+  if (listing.status === 'suspended') {
+    return (
+      <section className={`${cardClass} flex flex-col gap-4`} aria-labelledby="manage-title">
+        <div className="flex items-center justify-between gap-3">
+          <h2 id="manage-title" className="text-lg font-bold text-slate-900">
+            إدارة الإعلان
+          </h2>
+          <ListingStatusBadge status={listing.status} />
+        </div>
+        <p className="text-sm leading-relaxed text-slate-700">
+          أوقفت إدارة فرصة هذا الإعلان، ولا يمكنك تعديله أو تفعيله من حسابك حالياً.
+        </p>
+      </section>
+    );
+  }
+
   const statusActions: { status: ListingStatus; label: string; icon: typeof Pause; primary?: boolean }[] = [];
   if (listing.status === 'active') {
     statusActions.push({ status: 'paused', label: 'إيقاف مؤقت', icon: Pause });

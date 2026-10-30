@@ -12,9 +12,11 @@ import { ApplicationStatusBadge } from '@/components/sell/application-status-bad
 import { supabase } from '@/lib/supabase';
 import { categoryLabel, type ApplicationWithListing, type Listing } from '@/lib/domain';
 import { formatDate } from '@/lib/format';
+import { profileStatusLabel } from '@/lib/admin';
+import { AccountSettingsPanel } from '@/components/dashboard/account-settings-panel';
 import { buttonPrimary, cardClass } from '@/lib/ui';
 
-type Tab = 'main' | 'deals';
+type Tab = 'main' | 'deals' | 'account';
 
 export function DashboardHome() {
   const { profile } = useAuth();
@@ -24,6 +26,11 @@ export function DashboardHome() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      {profile.status !== 'active' && (
+        <div role="alert" className="mb-8 rounded-2xl border border-rose-200 bg-rose-50 p-5 text-sm leading-relaxed text-rose-800">
+          حسابك {profileStatusLabel[profile.status]} حالياً، ولا يمكنك نشر إعلانات أو التقديم على فرص أو تعديل الاتفاقات. للاستفسار راجع إدارة المنصة.
+        </div>
+      )}
       <header className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="text-sm font-bold text-brand-700">{isOwner ? 'لوحة صاحب الفرصة' : 'لوحة الباحث عن الفرص'}</p>
@@ -47,6 +54,7 @@ export function DashboardHome() {
           [
             { value: 'main', label: isOwner ? 'إعلاناتي' : 'طلباتي' },
             { value: 'deals', label: 'الاتفاقات' },
+            { value: 'account', label: 'حسابي' },
           ] as { value: Tab; label: string }[]
         ).map((item) => (
           <button
@@ -65,7 +73,7 @@ export function DashboardHome() {
       </div>
 
       <div className="mt-8">
-        {tab === 'deals' ? <DealsList /> : isOwner ? <OwnerListings ownerId={profile.id} /> : <WorkerApplications workerId={profile.id} />}
+        {tab === 'account' ? <AccountSettingsPanel /> : tab === 'deals' ? <DealsList /> : isOwner ? <OwnerListings ownerId={profile.id} /> : <WorkerApplications workerId={profile.id} />}
       </div>
     </div>
   );
