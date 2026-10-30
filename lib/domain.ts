@@ -1,0 +1,145 @@
+export type AccountType = 'worker' | 'owner';
+export type ListingStatus = 'active' | 'paused' | 'closed';
+export type CommissionType = 'percentage' | 'fixed';
+export type ApplicationStatus = 'pending' | 'accepted' | 'rejected' | 'withdrawn';
+export type DealStatus = 'active' | 'completed';
+
+export interface Profile {
+  id: string;
+  account_type: AccountType;
+  full_name: string;
+  governorate: string | null;
+}
+
+export interface OwnerName {
+  full_name: string;
+}
+
+export interface Listing {
+  id: string;
+  owner_id: string;
+  category: ListingCategory;
+  title: string;
+  description: string;
+  price: number;
+  location: string;
+  commission_type: CommissionType;
+  commission_value: number;
+  commission_terms: string;
+  duration_days: number;
+  status: ListingStatus;
+  created_at: string;
+}
+
+export interface ListingWithOwner extends Listing {
+  owner: OwnerName | null;
+}
+
+export interface Application {
+  id: string;
+  listing_id: string;
+  worker_id: string;
+  message: string;
+  status: ApplicationStatus;
+  created_at: string;
+}
+
+export interface ApplicationWithWorker extends Application {
+  worker: OwnerName | null;
+}
+
+export interface ApplicationWithListing extends Application {
+  listing: (Pick<Listing, 'id' | 'title' | 'price' | 'location' | 'status' | 'category'> & { owner: OwnerName | null }) | null;
+}
+
+export interface Deal {
+  id: string;
+  deal_number: string;
+  listing_id: string;
+  application_id: string;
+  owner_id: string;
+  worker_id: string;
+  listing_title: string;
+  listing_price: number;
+  commission_type: CommissionType;
+  commission_value: number;
+  commission_terms: string;
+  status: DealStatus;
+  created_at: string;
+  completed_at: string | null;
+}
+
+export interface DealWithParties extends Deal {
+  owner: OwnerName | null;
+  worker: OwnerName | null;
+}
+
+export interface DealEvent {
+  id: string;
+  deal_id: string;
+  event_type: 'created' | 'completed';
+  note: string | null;
+  created_at: string;
+}
+
+export type ListingCategory = 'cars' | 'real_estate' | 'electronics' | 'furniture' | 'commercial' | 'services';
+
+export const LISTING_CATEGORIES: { value: ListingCategory; label: string }[] = [
+  { value: 'cars', label: 'السيارات' },
+  { value: 'real_estate', label: 'العقارات' },
+  { value: 'electronics', label: 'الأجهزة الإلكترونية' },
+  { value: 'furniture', label: 'الأثاث' },
+  { value: 'commercial', label: 'المنتجات التجارية' },
+  { value: 'services', label: 'الخدمات' },
+];
+
+export const GOVERNORATES = [
+  'القاهرة',
+  'الجيزة',
+  'الإسكندرية',
+  'الدقهلية',
+  'البحر الأحمر',
+  'البحيرة',
+  'الفيوم',
+  'الغربية',
+  'الإسماعيلية',
+  'المنوفية',
+  'المنيا',
+  'القليوبية',
+  'الوادي الجديد',
+  'السويس',
+  'أسوان',
+  'أسيوط',
+  'بني سويف',
+  'بورسعيد',
+  'دمياط',
+  'الشرقية',
+  'جنوب سيناء',
+  'كفر الشيخ',
+  'مطروح',
+  'الأقصر',
+  'قنا',
+  'شمال سيناء',
+  'سوهاج',
+];
+
+export const categoryLabel = (value: ListingCategory) =>
+  LISTING_CATEGORIES.find((c) => c.value === value)?.label ?? value;
+
+export const applicationStatusLabel: Record<ApplicationStatus, string> = {
+  pending: 'قيد المراجعة',
+  accepted: 'مقبول',
+  rejected: 'مرفوض',
+  withdrawn: 'تم السحب',
+};
+
+export const listingStatusLabel: Record<ListingStatus, string> = {
+  active: 'منشور',
+  paused: 'متوقف مؤقتاً',
+  closed: 'مغلق',
+};
+
+export const dealStatusLabel: Record<DealStatus, string> = {
+  active: 'اتفاق نشط',
+  completed: 'مكتمل',
+};
