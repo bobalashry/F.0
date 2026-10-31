@@ -6,6 +6,7 @@ import { ArrowRight, CalendarCheck, CheckCircle2, Info, Loader2, ShieldCheck } f
 import { useAuth } from '@/components/auth/auth-provider';
 import { LoadingState, NoticePanel } from '@/components/common/state-panels';
 import { DealStatusBadge } from '@/components/deals/deal-status-badge';
+import { OwnerContactCard } from '@/components/deals/owner-contact-card';
 import { supabase } from '@/lib/supabase';
 import type { DealEvent, DealWithParties } from '@/lib/domain';
 import { formatCommission, formatDate, formatEGP } from '@/lib/format';
@@ -143,6 +144,7 @@ export function DealDetail({ dealId }: DealDetailProps) {
         </div>
 
         <aside className="flex flex-col gap-6 lg:sticky lg:top-24 lg:self-start">
+          {!isOwner && <OwnerContactCard listingId={deal.listing_id} />}
           {isOwner && deal.status === 'active' && (
             <section className={`${cardClass} flex flex-col gap-4`}>
               <h2 className="flex items-center gap-2 text-lg font-bold text-slate-900">

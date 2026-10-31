@@ -14,6 +14,7 @@ import { categoryLabel, type ApplicationWithListing, type Listing } from '@/lib/
 import { formatDate } from '@/lib/format';
 import { profileStatusLabel } from '@/lib/admin';
 import { AccountSettingsPanel } from '@/components/dashboard/account-settings-panel';
+import { ContactDetailsPanel } from '@/components/dashboard/contact-details-panel';
 import { buttonPrimary, cardClass } from '@/lib/ui';
 
 type Tab = 'main' | 'deals' | 'account';
@@ -73,7 +74,12 @@ export function DashboardHome() {
       </div>
 
       <div className="mt-8">
-        {tab === 'account' ? <AccountSettingsPanel /> : tab === 'deals' ? <DealsList /> : isOwner ? <OwnerListings ownerId={profile.id} /> : <WorkerApplications workerId={profile.id} />}
+        {tab === 'account' ? (
+          <div className="flex flex-col gap-8">
+            <AccountSettingsPanel />
+            <ContactDetailsPanel />
+          </div>
+        ) : tab === 'deals' ? <DealsList /> : isOwner ? <OwnerListings ownerId={profile.id} /> : <WorkerApplications workerId={profile.id} />}
       </div>
     </div>
   );

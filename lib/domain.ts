@@ -14,6 +14,22 @@ export interface Profile {
   status: ProfileStatus;
 }
 
+export interface ContactDetails {
+  company_name: string | null;
+  responsible_person: string | null;
+  phone: string | null;
+  address: string | null;
+  city: string | null;
+}
+
+export interface OwnerContact {
+  company_name: string | null;
+  responsible_person: string | null;
+  phone: string | null;
+  address: string | null;
+  governorate: string | null;
+}
+
 export interface OwnerName {
   full_name: string;
 }
