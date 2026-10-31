@@ -39,7 +39,7 @@ export function AdminTypeRequests() {
         return;
       }
       const requests = data as AccountTypeRequest[];
-      const userIds = [...new Set(requests.map((request) => request.user_id))];
+      const userIds = Array.from(new Set(requests.map((request) => request.user_id)));
       const names = new Map<string, string>();
       if (userIds.length > 0) {
         const { data: profiles } = await supabase.from('profiles').select('id, full_name').in('id', userIds);
