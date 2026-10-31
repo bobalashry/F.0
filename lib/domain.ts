@@ -4,6 +4,8 @@ export type CommissionType = 'percentage' | 'fixed';
 export type ApplicationStatus = 'pending' | 'accepted' | 'rejected' | 'withdrawn';
 export type DealStatus = 'active' | 'completed';
 
+export const PLATFORM_FEE_PERCENT = 10;
+
 export type ProfileStatus = 'active' | 'suspended' | 'banned';
 
 export interface Profile {
@@ -83,9 +85,18 @@ export interface Deal {
   commission_type: CommissionType;
   commission_value: number;
   commission_terms: string;
+  worker_commission_amount: number | null;
   status: DealStatus;
   created_at: string;
   completed_at: string | null;
+}
+
+export interface DealFinancials {
+  deal_id: string;
+  commission_total: number;
+  platform_fee_percent: number;
+  platform_fee_amount: number;
+  worker_commission_amount: number;
 }
 
 export interface DealWithParties extends Deal {

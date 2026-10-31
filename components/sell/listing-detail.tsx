@@ -9,8 +9,8 @@ import { ApplyPanel } from '@/components/sell/apply-panel';
 import { OwnerListingActions } from '@/components/sell/owner-listing-actions';
 import { ListingStatusBadge } from '@/components/sell/listing-status-badge';
 import { supabase } from '@/lib/supabase';
-import { categoryLabel, type ListingStatus, type ListingWithOwner } from '@/lib/domain';
-import { formatCommission, formatEGP } from '@/lib/format';
+import { categoryLabel, PLATFORM_FEE_PERCENT, type ListingStatus, type ListingWithOwner } from '@/lib/domain';
+import { commissionBreakdown, formatCommission, formatEGP, formatNetCommission } from '@/lib/format';
 import { cardClass } from '@/lib/ui';
 
 export function ListingDetail({ listingId }: { listingId: string }) {
@@ -90,9 +90,20 @@ export function ListingDetail({ listingId }: { listingId: string }) {
 
           <div className="grid gap-4 sm:grid-cols-3">
             <Metric icon={Banknote} label="السعر" value={formatEGP(listing.price)} />
-            <Metric icon={Percent} label="العمولة" value={formatCommission(listing.commission_type, listing.commission_value)} highlight />
+            <Metric
+              icon={Percent}
+              label={isOwner ? 'العمولة الإجمالية' : 'صافي العمولة للمسوق'}
+              value={
+                isOwner
+                  ? formatCommission(listing.commission_type, listing.commission_value)
+                  : formatNetCommission(listing.commission_type, listing.commission_value)
+              }
+              highlight
+            />
             <Metric icon={CalendarClock} label="مدة الإعلان" value={`${listing.duration_days} يوم`} />
           </div>
+
+          {isOwner && <CommissionSplit listing={listing} />}
 
           <div className={`${cardClass} flex flex-col gap-3`}>
             <h2 className="flex items-center gap-2 text-lg font-bold text-slate-900">
@@ -131,6 +142,29 @@ export function ListingDetail({ listingId }: { listingId: string }) {
           <ApplicantsPanel listingId={listing.id} listingStatus={listing.status} />
         </div>
       )}
+    </div>
+  );
+}
+
+function CommissionSplit({ listing }: { listing: ListingWithOwner }) {
+  const split = commissionBreakdown(listing.commission_type, listing.commission_value, listing.price);
+  const rows = [
+    { label: 'العمولة الإجمالية', value: formatEGP(split.total), tone: 'text-slate-900' },
+    { label: `خصم المنصة (${PLATFORM_FEE_PERCENT}%)`, value: `- ${formatEGP(split.fee)}`, tone: 'text-rose-700' },
+    { label: 'صافي عمولة المسوق', value: formatEGP(split.net), tone: 'text-gold-700' },
+  ];
+  return (
+    <div className={`${cardClass} flex flex-col gap-4`}>
+      <h2 className="text-lg font-bold text-slate-900">توزيع العمولة</h2>
+      <dl className="flex flex-col divide-y divide-slate-100">
+        {rows.map((row) => (
+          <div key={row.label} className="flex items-center justify-between gap-4 py-3">
+            <dt className="text-sm text-slate-600">{row.label}</dt>
+            <dd className={`text-sm font-bold ${row.tone}`}>{row.value}</dd>
+          </div>
+        ))}
+      </dl>
+      <p className="text-xs leading-relaxed text-slate-500">تحسب المنصة {PLATFORM_FEE_PERCENT}% من العمولة الإجمالية، ويظهر للمسوق صافي العمولة فقط.</p>
     </div>
   );
 }

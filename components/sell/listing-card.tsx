@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Banknote, Clock, MapPin, Percent, User } from 'lucide-react';
 import { categoryLabel, type ListingWithOwner } from '@/lib/domain';
-import { formatCommission, formatEGP } from '@/lib/format';
+import { formatEGP, formatNetCommission } from '@/lib/format';
 import { cardClass } from '@/lib/ui';
 
 export function ListingCard({ listing }: { listing: ListingWithOwner }) {
@@ -41,10 +41,10 @@ export function ListingCard({ listing }: { listing: ListingWithOwner }) {
         <div className="flex flex-col gap-1">
           <span className="flex items-center gap-1 text-xs text-slate-500">
             <Percent className="h-3.5 w-3.5" aria-hidden />
-            العمولة
+            صافي العمولة
           </span>
           <span className="text-base font-bold text-gold-700">
-            {formatCommission(listing.commission_type, listing.commission_value)}
+            {formatNetCommission(listing.commission_type, listing.commission_value)}
           </span>
         </div>
       </div>

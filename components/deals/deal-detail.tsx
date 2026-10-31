@@ -6,10 +6,11 @@ import { ArrowRight, CalendarCheck, CheckCircle2, Info, Loader2, ShieldCheck } f
 import { useAuth } from '@/components/auth/auth-provider';
 import { LoadingState, NoticePanel } from '@/components/common/state-panels';
 import { DealStatusBadge } from '@/components/deals/deal-status-badge';
+import { CommissionBreakdownCard } from '@/components/deals/commission-breakdown-card';
 import { OwnerContactCard } from '@/components/deals/owner-contact-card';
 import { supabase } from '@/lib/supabase';
 import type { DealEvent, DealWithParties } from '@/lib/domain';
-import { formatCommission, formatDate, formatEGP } from '@/lib/format';
+import { formatDate, formatEGP } from '@/lib/format';
 import { translateError } from '@/lib/messages';
 import { buttonPrimary, cardClass } from '@/lib/ui';
 
@@ -109,7 +110,11 @@ export function DealDetail({ dealId }: DealDetailProps) {
             <Party label="صاحب الفرصة" name={deal.owner?.full_name} />
             <Party label="المتقدم المقبول" name={deal.worker?.full_name} />
             <Party label="سعر الفرصة" name={formatEGP(deal.listing_price)} />
-            <Party label="العمولة المتفق عليها" name={formatCommission(deal.commission_type, deal.commission_value)} highlight />
+            <Party
+              label={isOwner ? 'صافي عمولة المسوق' : 'صافي عمولتك'}
+              name={deal.worker_commission_amount === null ? null : formatEGP(deal.worker_commission_amount)}
+              highlight
+            />
           </section>
 
           <section className={`${cardClass} flex flex-col gap-3`}>
@@ -145,6 +150,7 @@ export function DealDetail({ dealId }: DealDetailProps) {
 
         <aside className="flex flex-col gap-6 lg:sticky lg:top-24 lg:self-start">
           {!isOwner && <OwnerContactCard listingId={deal.listing_id} />}
+          {isOwner && <CommissionBreakdownCard dealId={deal.id} />}
           {isOwner && deal.status === 'active' && (
             <section className={`${cardClass} flex flex-col gap-4`}>
               <h2 className="flex items-center gap-2 text-lg font-bold text-slate-900">

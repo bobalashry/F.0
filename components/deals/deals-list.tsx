@@ -8,7 +8,7 @@ import { LoadingState, NoticePanel } from '@/components/common/state-panels';
 import { DealStatusBadge } from '@/components/deals/deal-status-badge';
 import { supabase } from '@/lib/supabase';
 import type { DealWithParties } from '@/lib/domain';
-import { formatCommission } from '@/lib/format';
+import { formatEGP } from '@/lib/format';
 import { cardClass } from '@/lib/ui';
 
 export function DealsList() {
@@ -73,8 +73,10 @@ export function DealsList() {
                   <p className="font-semibold text-slate-800">{counterpart ?? 'غير متاح'}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-slate-500">العمولة</p>
-                  <p className="font-semibold text-gold-700">{formatCommission(deal.commission_type, deal.commission_value)}</p>
+                  <p className="text-xs text-slate-500">صافي العمولة</p>
+                  <p className="font-semibold text-gold-700">
+                    {deal.worker_commission_amount === null ? 'غير متاح' : formatEGP(deal.worker_commission_amount)}
+                  </p>
                 </div>
               </div>
               <span className="mt-auto flex items-center gap-2 text-sm font-bold text-brand-700">
