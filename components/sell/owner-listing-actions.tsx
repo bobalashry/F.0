@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Loader2, Pause, Pencil, Play, Trash2, XCircle } from 'lucide-react';
+import { BadgeCheck, Loader2, Pause, Pencil, Play, Trash2, XCircle } from 'lucide-react';
 import { ListingStatusBadge } from '@/components/sell/listing-status-badge';
 import { supabase } from '@/lib/supabase';
 import type { ListingStatus, ListingWithOwner } from '@/lib/domain';
@@ -40,6 +40,20 @@ export function OwnerListingActions({ listing, onStatusChange }: OwnerListingAct
     setMessage({ tone: 'success', text: 'تم تحديث حالة الإعلان' });
   };
 
+  const markSold = async () => {
+    setMessage(null);
+    setBusy('status');
+    const { error } = await supabase.rpc('mark_listing_sold', { p_listing_id: listing.id });
+    setBusy(null);
+
+    if (error) {
+      setMessage({ tone: 'error', text: translateError(error) });
+      return;
+    }
+    onStatusChange('sold');
+    setMessage({ tone: 'success', text: 'تم تسجيل الإعلان كمباع' });
+  };
+
   const deleteListing = async () => {
     setMessage(null);
     setBusy('delete');
@@ -54,7 +68,7 @@ export function OwnerListingActions({ listing, onStatusChange }: OwnerListingAct
     router.push('/sell');
   };
 
-  if (listing.status === 'suspended') {
+  if (listing.status === 'suspended' || listing.status === 'sold') {
     return (
       <section className={`${cardClass} flex flex-col gap-4`} aria-labelledby="manage-title">
         <div className="flex items-center justify-between gap-3">
@@ -64,7 +78,9 @@ export function OwnerListingActions({ listing, onStatusChange }: OwnerListingAct
           <ListingStatusBadge status={listing.status} />
         </div>
         <p className="text-sm leading-relaxed text-slate-700">
-          أوقفت إدارة فرصة هذا الإعلان، ولا يمكنك تعديله أو تفعيله من حسابك حالياً.
+          {listing.status === 'sold'
+            ? 'تم بيع هذا المنتج، ولم يعد الإعلان يستقبل طلبات جديدة. تبقى سجلات المسوقين والعملاء محفوظة.'
+            : 'أوقفت إدارة فرصة هذا الإعلان، ولا يمكنك تعديله أو تفعيله من حسابك حالياً.'}
         </p>
       </section>
     );
@@ -79,6 +95,8 @@ export function OwnerListingActions({ listing, onStatusChange }: OwnerListingAct
   if (listing.status !== 'closed') {
     statusActions.push({ status: 'closed', label: 'إغلاق الإعلان', icon: XCircle });
   }
+
+  const canMarkSold = listing.status === 'active' || listing.status === 'paused';
 
   return (
     <section className={`${cardClass} flex flex-col gap-5`} aria-labelledby="manage-title">
@@ -105,6 +123,12 @@ export function OwnerListingActions({ listing, onStatusChange }: OwnerListingAct
             </button>
           );
         })}
+        {canMarkSold && (
+          <button type="button" disabled={busy !== null} onClick={markSold} className={buttonSecondary}>
+            {busy === 'status' ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <BadgeCheck className="h-4 w-4" aria-hidden />}
+            تم البيع
+          </button>
+        )}
         <Link href={`/sell/${listing.id}/edit`} className={buttonSecondary}>
           <Pencil className="h-4 w-4" aria-hidden />
           تعديل بيانات الإعلان

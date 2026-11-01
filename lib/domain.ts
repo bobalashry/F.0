@@ -1,5 +1,5 @@
 export type AccountType = 'worker' | 'owner';
-export type ListingStatus = 'active' | 'paused' | 'closed' | 'suspended';
+export type ListingStatus = 'active' | 'paused' | 'closed' | 'sold' | 'suspended';
 export type CommissionType = 'percentage' | 'fixed';
 export type ApplicationStatus = 'pending' | 'accepted' | 'rejected' | 'withdrawn';
 export type DealStatus = 'active' | 'completed';
@@ -167,6 +167,7 @@ export const listingStatusLabel: Record<ListingStatus, string> = {
   active: 'منشور',
   paused: 'متوقف مؤقتاً',
   closed: 'مغلق',
+  sold: 'تم البيع',
   suspended: 'موقوف من الإدارة',
 };
 

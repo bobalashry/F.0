@@ -56,10 +56,6 @@ export function ApplyPanel({ listing }: ApplyPanelProps) {
     setSuccess(null);
 
     const message = String(new FormData(event.currentTarget).get('message') ?? '').trim();
-    if (message.length < 10) {
-      setError('اكتب رسالة تعريفية من 10 أحرف على الأقل');
-      return;
-    }
     if (message.length > 1000) {
       setError('الرسالة يجب ألا تتجاوز 1000 حرف');
       return;
@@ -115,9 +111,9 @@ export function ApplyPanel({ listing }: ApplyPanelProps) {
     <section className={`${cardClass} flex flex-col gap-5`} aria-labelledby="apply-title">
       <div>
         <h2 id="apply-title" className="text-lg font-bold text-slate-900">
-          {application ? 'حالة طلبك' : 'قدّم على هذه الفرصة'}
+          {application ? 'حالة طلبك' : 'قبول العرض'}
         </h2>
-        {!application && <p className="mt-1 text-sm text-slate-500">عرّف نفسك لصاحب الفرصة بإيجاز وأوضح خبرتك في البيع.</p>}
+        {!application && <p className="mt-1 text-sm text-slate-500">اضغط «قبول العرض» لتسجيل اهتمامك بهذه الفرصة. الرسالة التعريفية اختيارية.</p>}
       </div>
 
       {success && (
@@ -155,7 +151,7 @@ export function ApplyPanel({ listing }: ApplyPanelProps) {
         <form onSubmit={handleApply} className="flex flex-col gap-4" noValidate>
           <div>
             <label htmlFor="apply-message" className={labelClass}>
-              رسالتك لصاحب الفرصة
+              رسالتك لصاحب الفرصة (اختياري)
             </label>
             <textarea
               id="apply-message"
@@ -168,7 +164,7 @@ export function ApplyPanel({ listing }: ApplyPanelProps) {
           </div>
           <button type="submit" disabled={submitting} className={buttonPrimary}>
             {submitting ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <Send className="h-4 w-4" aria-hidden />}
-            إرسال الطلب
+            قبول العرض
           </button>
         </form>
       )}
