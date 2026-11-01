@@ -49,6 +49,9 @@ export interface Listing {
   commission_terms: string;
   duration_days: number;
   status: ListingStatus;
+  product_name: string | null;
+  specs: string | null;
+  image_paths: string[];
   created_at: string;
 }
 
@@ -169,6 +172,30 @@ export const listingStatusLabel: Record<ListingStatus, string> = {
   closed: 'مغلق',
   sold: 'تم البيع',
   suspended: 'موقوف من الإدارة',
+};
+
+export type BuyerStatus = 'pending' | 'accepted' | 'objected';
+
+export interface Buyer {
+  id: string;
+  reference_number: string;
+  listing_id: string;
+  worker_id: string;
+  owner_id: string;
+  buyer_name: string;
+  buyer_phone: string;
+  status: BuyerStatus;
+  objection_evidence: string | null;
+  consent_confirmed_at: string;
+  decided_at: string | null;
+  protection_ends_at: string | null;
+  created_at: string;
+}
+
+export const buyerStatusLabel: Record<BuyerStatus, string> = {
+  pending: 'بانتظار مراجعة المالك',
+  accepted: 'مؤكد ومحمي',
+  objected: 'معترض عليه',
 };
 
 export const dealStatusLabel: Record<DealStatus, string> = {

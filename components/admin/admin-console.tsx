@@ -4,7 +4,10 @@ import { useEffect, useState } from 'react';
 import { LogOut, ShieldCheck } from 'lucide-react';
 import { useAuth } from '@/components/auth/auth-provider';
 import { AdminAuditLog } from '@/components/admin/admin-audit-log';
+import { AdminBuyers } from '@/components/admin/admin-buyers';
+import { AdminDeals } from '@/components/admin/admin-deals';
 import { AdminListings } from '@/components/admin/admin-listings';
+import { AdminRatings } from '@/components/admin/admin-ratings';
 import { AdminMembers } from '@/components/admin/admin-members';
 import { AdminOverview } from '@/components/admin/admin-overview';
 import { AdminSignIn } from '@/components/admin/admin-sign-in';
@@ -15,7 +18,7 @@ import { supabase } from '@/lib/supabase';
 import type { AdminAccess, AdminPermission } from '@/lib/admin';
 import { buttonPrimary, buttonSecondary } from '@/lib/ui';
 
-type Tab = 'overview' | 'members' | 'listings' | 'requests' | 'staff' | 'log';
+type Tab = 'overview' | 'members' | 'listings' | 'buyers' | 'deals' | 'ratings' | 'requests' | 'staff' | 'log';
 
 type GateState =
   | { status: 'checking' }
@@ -31,6 +34,9 @@ const TABS: { value: Tab; label: string; visible: (access: AdminAccess) => boole
   { value: 'overview', label: 'نظرة عامة', visible: () => true },
   { value: 'members', label: 'الأعضاء', visible: (access) => hasPermission(access, 'members') },
   { value: 'listings', label: 'الإعلانات', visible: (access) => hasPermission(access, 'listings') },
+  { value: 'buyers', label: 'العملاء', visible: (access) => hasPermission(access, 'listings') },
+  { value: 'deals', label: 'الصفقات والعمولات', visible: (access) => access.role === 'super_admin' },
+  { value: 'ratings', label: 'التقييمات', visible: (access) => hasPermission(access, 'members') },
   { value: 'requests', label: 'طلبات تغيير النوع', visible: (access) => hasPermission(access, 'members') },
   { value: 'staff', label: 'المشرفون', visible: (access) => access.role === 'super_admin' },
   { value: 'log', label: 'سجل النشاط', visible: () => true },
@@ -138,6 +144,9 @@ export function AdminConsole() {
         {tab === 'overview' && <AdminOverview />}
         {tab === 'members' && <AdminMembers />}
         {tab === 'listings' && <AdminListings />}
+        {tab === 'buyers' && <AdminBuyers />}
+        {tab === 'deals' && <AdminDeals />}
+        {tab === 'ratings' && <AdminRatings />}
         {tab === 'requests' && <AdminTypeRequests />}
         {tab === 'staff' && <AdminStaff />}
         {tab === 'log' && <AdminAuditLog />}

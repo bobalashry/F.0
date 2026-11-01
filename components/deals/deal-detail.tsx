@@ -7,6 +7,7 @@ import { useAuth } from '@/components/auth/auth-provider';
 import { LoadingState, NoticePanel } from '@/components/common/state-panels';
 import { DealStatusBadge } from '@/components/deals/deal-status-badge';
 import { CommissionBreakdownCard } from '@/components/deals/commission-breakdown-card';
+import { DealRatingPanel } from '@/components/deals/deal-rating-panel';
 import { OwnerContactCard } from '@/components/deals/owner-contact-card';
 import { supabase } from '@/lib/supabase';
 import type { DealEvent, DealWithParties } from '@/lib/domain';
@@ -181,6 +182,7 @@ export function DealDetail({ dealId }: DealDetailProps) {
               <p className="text-sm leading-relaxed text-emerald-900/80">هذا الاتفاق مكتمل ومحفوظ في السجل.</p>
             </section>
           )}
+          {deal.status === 'completed' && <DealRatingPanel dealId={deal.id} />}
 
           <section className="flex gap-3 rounded-2xl border border-slate-200 bg-white p-5 text-sm leading-relaxed text-slate-600">
             <Info className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" aria-hidden />

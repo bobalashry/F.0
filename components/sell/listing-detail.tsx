@@ -6,8 +6,11 @@ import { useAuth } from '@/components/auth/auth-provider';
 import { LoadingState, NoticePanel } from '@/components/common/state-panels';
 import { ApplicantsPanel } from '@/components/sell/applicants-panel';
 import { ApplyPanel } from '@/components/sell/apply-panel';
+import { BuyerRegistrationPanel } from '@/components/sell/buyer-registration-panel';
+import { BuyersReviewPanel } from '@/components/sell/buyers-review-panel';
 import { OwnerListingActions } from '@/components/sell/owner-listing-actions';
 import { ListingStatusBadge } from '@/components/sell/listing-status-badge';
+import { ListingProductDetails } from '@/components/sell/listing-product-details';
 import { supabase } from '@/lib/supabase';
 import { categoryLabel, PLATFORM_FEE_PERCENT, type ListingStatus, type ListingWithOwner } from '@/lib/domain';
 import { commissionBreakdown, formatCommission, formatEGP, formatNetCommission } from '@/lib/format';
@@ -105,6 +108,8 @@ export function ListingDetail({ listingId }: { listingId: string }) {
 
           {isOwner && <CommissionSplit listing={listing} />}
 
+          <ListingProductDetails listing={listing} />
+
           <div className={`${cardClass} flex flex-col gap-3`}>
             <h2 className="flex items-center gap-2 text-lg font-bold text-slate-900">
               <FileText className="h-5 w-5 text-brand-700" aria-hidden />
@@ -138,8 +143,14 @@ export function ListingDetail({ listingId }: { listingId: string }) {
       </div>
 
       {isOwner && (
-        <div className="mt-10">
+        <div className="mt-10 flex flex-col gap-8">
           <ApplicantsPanel listingId={listing.id} listingStatus={listing.status} />
+          <BuyersReviewPanel listingId={listing.id} />
+        </div>
+      )}
+      {isWorker && (
+        <div className="mt-10">
+          <BuyerRegistrationPanel listingId={listing.id} />
         </div>
       )}
     </div>

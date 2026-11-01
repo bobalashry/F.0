@@ -32,6 +32,16 @@ const ERROR_MESSAGES: Array<[string, string]> = [
   ['permissions_required', 'اختر صلاحية واحدة على الأقل'],
   ['admin_not_found', 'المشرف غير موجود'],
   ['invalid_status', 'الحالة المطلوبة غير صالحة'],
+  ['buyer_already_registered', 'هذا العميل مسجل بالفعل على هذا الإعلان'],
+  ['consent_required', 'يجب تأكيد موافقة العميل على تسجيل بياناته'],
+  ['invalid_buyer_name', 'اسم العميل يجب أن يكون بين 3 و120 حرفاً'],
+  ['invalid_buyer_phone', 'رقم هاتف العميل غير صحيح'],
+  ['buyer_not_pending', 'تمت مراجعة هذا العميل بالفعل'],
+  ['buyer_not_found', 'بيانات العميل غير موجودة'],
+  ['evidence_required', 'اكتب سبب الاعتراض ودليله (10 أحرف على الأقل)'],
+  ['listing_cannot_be_sold', 'لا يمكن تحديد هذا الإعلان كمباع في حالته الحالية'],
+  ['buyers_listing_id_fkey', 'لا يمكن حذف الإعلان لوجود عملاء مسجلين به، يمكنك إغلاقه بدلاً من ذلك'],
+  ['not_authenticated', 'يجب تسجيل الدخول أولاً'],
 ];
 
 export const translateError = (error: { message?: string } | null | undefined) => {

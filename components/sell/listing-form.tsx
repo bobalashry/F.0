@@ -6,6 +6,8 @@ import { AlertCircle, Loader2, Save } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { LISTING_CATEGORIES, type CommissionType, type Listing } from '@/lib/domain';
 import { translateError } from '@/lib/messages';
+import { ListingImagesField } from '@/components/sell/listing-images-field';
+import { MAX_LISTING_IMAGES } from '@/lib/listing-images';
 import { buttonPrimary, buttonSecondary, cardClass, inputClass, labelClass } from '@/lib/ui';
 
 interface ListingFormProps {
@@ -22,6 +24,9 @@ interface ListingPayload {
   commission_value: number;
   commission_terms: string;
   duration_days: number;
+  product_name: string;
+  specs: string | null;
+  image_paths: string[];
 }
 
 const COMMISSION_OPTIONS: { value: CommissionType; label: string; hint: string }[] = [
@@ -29,7 +34,8 @@ const COMMISSION_OPTIONS: { value: CommissionType; label: string; hint: string }
   { value: 'fixed', label: 'مبلغ ثابت', hint: 'مثال: 1000 جنيه لكل صفقة' },
 ];
 
-function readPayload(form: FormData): { payload?: ListingPayload; error?: string } {
+function readPayload(form: FormData, imagePaths: string[]): { payload?: ListingPayload; error?: string } {
+  const specs = String(form.get('specs') ?? '').trim();
   const payload: ListingPayload = {
     category: String(form.get('category') ?? ''),
     title: String(form.get('title') ?? '').trim(),
@@ -40,9 +46,18 @@ function readPayload(form: FormData): { payload?: ListingPayload; error?: string
     commission_value: Number(form.get('commission_value')),
     commission_terms: String(form.get('commission_terms') ?? '').trim(),
     duration_days: Number(form.get('duration_days')),
+    product_name: String(form.get('product_name') ?? '').trim(),
+    specs: specs || null,
+    image_paths: imagePaths,
   };
 
   if (!payload.category) return { error: 'اختر تصنيف الفرصة' };
+  if (payload.product_name.length < 2 || payload.product_name.length > 120) {
+    return { error: 'اسم المنتج يجب أن يكون بين حرفين و120 حرفاً' };
+  }
+  if (payload.image_paths.length === 0) return { error: 'أضف صورة واحدة على الأقل للمنتج' };
+  if (payload.image_paths.length > MAX_LISTING_IMAGES) return { error: `الحد الأقصى ${MAX_LISTING_IMAGES} صور` };
+  if (payload.specs && payload.specs.length > 2000) return { error: 'المواصفات يجب ألا تتجاوز 2000 حرف' };
   if (payload.title.length < 3 || payload.title.length > 120) return { error: 'عنوان الفرصة يجب أن يكون بين 3 و120 حرفاً' };
   if (payload.description.length < 10) return { error: 'الوصف يجب أن يكون 10 أحرف على الأقل' };
   if (!Number.isFinite(payload.price) || payload.price < 0) return { error: 'أدخل سعراً صحيحاً بالجنيه' };
@@ -61,6 +76,7 @@ export function ListingForm({ initial }: ListingFormProps) {
   const router = useRouter();
   const isEdit = Boolean(initial);
   const [commissionType, setCommissionType] = useState<CommissionType>(initial?.commission_type ?? 'percentage');
+  const [imagePaths, setImagePaths] = useState<string[]>(initial?.image_paths ?? []);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -68,7 +84,7 @@ export function ListingForm({ initial }: ListingFormProps) {
     event.preventDefault();
     setError(null);
 
-    const { payload, error: validationError } = readPayload(new FormData(event.currentTarget));
+    const { payload, error: validationError } = readPayload(new FormData(event.currentTarget), imagePaths);
     if (!payload) {
       setError(validationError ?? 'تحقق من البيانات المدخلة');
       return;
@@ -102,6 +118,45 @@ export function ListingForm({ initial }: ListingFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6" noValidate>
+      <section className={`${cardClass} flex flex-col gap-5`}>
+        <div>
+          <h2 className="text-lg font-bold text-slate-900">المنتج</h2>
+          <p className="mt-1 text-sm text-slate-500">حدد المنتج بدقة، وأضف صوره ومواصفاته ليثق به المسوقون والمشترون.</p>
+        </div>
+
+        <div>
+          <label htmlFor="product_name" className={labelClass}>
+            اسم المنتج
+          </label>
+          <input
+            id="product_name"
+            name="product_name"
+            type="text"
+            maxLength={120}
+            defaultValue={initial?.product_name ?? ''}
+            className={inputClass}
+            placeholder="مثال: آيفون 15 برو ماكس 256 جيجا"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="specs" className={labelClass}>
+            المواصفات
+          </label>
+          <textarea
+            id="specs"
+            name="specs"
+            rows={4}
+            maxLength={2000}
+            defaultValue={initial?.specs ?? ''}
+            className={inputClass}
+            placeholder={'مثال:\nالسعة: 256 جيجا\nاللون: تيتانيوم طبيعي\nالحالة: مستعمل بحالة ممتازة'}
+          />
+        </div>
+
+        <ListingImagesField value={imagePaths} onChange={setImagePaths} />
+      </section>
+
       <section className={`${cardClass} flex flex-col gap-5`}>
         <div>
           <h2 className="text-lg font-bold text-slate-900">تفاصيل الفرصة</h2>
